@@ -1,32 +1,30 @@
 import React, { useEffect } from "react";
 import axios from 'axios';
-import queryString from "query-string";
+import {CLIENT_ID, CLIENT_SECRET} from "./Oauth";
 
 function Login({ history, location }) {
-  const query = queryString.parse(location.search);
-  const error = query.error === "access_denied";
-  const {code} = queryString.parse(location.search);
+  const code = new URLSearchParams(window.location.search).get('code');
 
+  const postData = {
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    code: code,
+    grant_type: 'authorization_code'
+  }
+  const params = new URLSearchParams(postData).toString();
+  //-------------------axios 사용--------------------
+  // const axiosConfig = {
+  //   headers: {
+  //     'Access-Control-Allow-Origin': '*',
+  //   }
+  // };
+  
   // async function getToken() {
   //   try {
-  //     // 이 부분은 express에 요청하여 JWT 토큰을 발급합니다.
-  //     const response = await axios.post(
-  //       'https://github.com/login/oauth/access_token',
-  //       {
-  //         code: code,
-  //         client_id: "c3185ab770940f72baf0",
-  //         client_secret: "31c3a5c73f83d54902570d8f046d50cf519ba61d",
-  //       },
-  //       {
-  //         headers: {
-  //           "Access-Control-Allow-Origin": "*",
-  //           accept: 'application/json',
-  //         },
-  //       },
-  //       );
-  //       // 유저 JWT 토큰을 저장합니다.
-  //       // localStorage.setItem('access_token', access_token);
+  //     const {data} = await axios.post(
+  //       `https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token?${params}`)
   //       console.log("Success");
+  //       console.log(data);
   //       history.push('/'); // 로그인이 완료되면 보여줄 페이지
   //     } catch (error) {
   //       console.log("Error");
@@ -35,14 +33,31 @@ function Login({ history, location }) {
   //   }
     
   //   useEffect(() => {
-  //   getToken();
+  //   getToken()
   // }, []);
+
+ // ---------- fetch 사용 ----------------------
+	// useEffect(() => {
+	// 	const reqOpt = {
+	// 		method: 'POST',
+	// 		headers: { 
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //       'Accept': 'application/json'
+  //       // 'Access-Control-Allow-Origin': '*',
+  //     },
+	// 	};
+
+    
+	// 	fetch(`https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token?${params}`, reqOpt)
+	// 	.then((response) => response.json())
+  //   .then((data) => console.log(data))
+  //   .then(history.push('/'));
+	// }, [])
+
 
   return(
     <>
       <div>
-         {console.log(query.code)}
-         {console.log(error)}
          {console.log(code)}
       </div>
     </>
